@@ -1,3 +1,18 @@
 <resources>
-    <string name="app_name">YourApp</string>
+    <string name="app_name">TestTep</string>
+    <string name="authorization">Authorization</string>
+    <string name="enter_phone">Enter the phone number</string>
+    <string name="enter_code">Enter the code</string>
+    <string name="get_code">Get the code</string>
+    <string name="get_code_again">Get the code again</string>
+    <string name="send">Send</string>
+    <string name="error">Error</string>
+    <string name="empty_text">""</string>
+    <string name="already_exist">Such a name already exists</string>
+    <string name="clear">"Clear"</string>
+    <string name="required_field">"this is a required field"</string>
+    <string name="correct">"Correct"</string>
+    <string name="must_characters_6">"Must contain 6 characters"</string>
+    <string name="must_characters_5">"Must contain min 5 characters"</string>
+    <string name="edit_profile">"Edit my profile"</string>
 </resources>

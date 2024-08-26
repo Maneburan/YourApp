@@ -3,7 +3,6 @@ package com.example.data
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import retrofit2.HttpException
 
 internal object Utils {
 
