@@ -129,7 +129,7 @@ fun RegistrationScreen(
                 content = {
                     Text("Регистрация")
                 },
-                enabled = !state.wait
+                enabled = !state.wait && !isErrorUserName.value
             )
         }
 

@@ -18,7 +18,7 @@ object EditMyProfile {
         val instagram: String = "",
         val status: String = "",
 
-        val filename: String = "filename",
+        val filename: String? = null,
         val base64: String? = null,
     ) {
         sealed interface Pages {

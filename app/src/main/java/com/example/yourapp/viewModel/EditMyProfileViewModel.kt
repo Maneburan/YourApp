@@ -46,7 +46,8 @@ class EditMyProfileViewModel @Inject constructor(
             state(state().copy(status = status))
         }
         override val iChangeBase64: (String?) -> Unit = { base64 ->
-            state(state().copy(base64 = base64))
+            val filename = if (base64 == null) null else "filename"
+            state(state().copy(base64 = base64, filename = filename))
         }
 
         override val iGetRemoteProfile: () -> Unit = {

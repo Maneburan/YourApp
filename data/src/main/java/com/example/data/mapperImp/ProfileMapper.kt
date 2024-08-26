@@ -8,7 +8,13 @@ import javax.inject.Inject
 internal class ProfileMapper  @Inject constructor(): Profile.Mapper {
 
     override fun toProfileRequest(editProfile: Entity.EditProfile): RemoteSource.Model.Request
-        .Profile = RemoteSource.Model.Request.Profile(
+        .Profile {
+        val avatar = if (editProfile.filename == null || editProfile.base64 == null) null
+        else RemoteSource.Model.Request.Profile.Avatar(
+            filename = editProfile.filename,
+            base64 = editProfile.base64,
+        )
+        return RemoteSource.Model.Request.Profile(
             name = editProfile.name,
             username = editProfile.username,
             birthday = editProfile.birthday,
@@ -16,11 +22,9 @@ internal class ProfileMapper  @Inject constructor(): Profile.Mapper {
             vk = editProfile.vk,
             instagram = editProfile.instagram,
             status = editProfile.status,
-            avatar = RemoteSource.Model.Request.Profile.Avatar(
-                filename = editProfile.filename,
-                base64 = editProfile.base64,
-            ),
+            avatar = avatar,
         )
+    }
 
     override fun toProfileEntity(profileData: RemoteSource.Model.Response.Profile.ProfileData): Entity
         .Profile = Entity.Profile(
