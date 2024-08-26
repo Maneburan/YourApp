@@ -25,9 +25,7 @@ class GetProfile @Inject constructor(
         return try {
             profileRepository.getMe(authToken.access)
         } catch (unauthorized: Exceptions.Unauthorized) {
-            Log.e("LODKA", "old authToken: $authToken")
             authToken = authTokenRepository.refresh(authToken)
-            Log.e("LODKA", "new authToken: $authToken")
             profileRepository.getMe(authToken.access)
         }
     }
