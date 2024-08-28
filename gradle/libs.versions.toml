@@ -6,6 +6,7 @@ hilt = "2.52"
 ksp = "1.9.24-1.0.20"
 
 #OTHERS
+countrycodepickercompose = "0.1"
 junit = "4.13.2"
 retrofit2 = "2.11.0"
 okhttp3 = "4.12.0"
@@ -36,6 +37,7 @@ google-material = "1.12.0"
 [libraries]
 #OTHERS
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil-compose" }
+countrycodepickercompose = { module = "com.github.ahmmedrejowan:CountryCodePickerCompose", version.ref = "countrycodepickercompose" }
 junit = { module = "junit:junit", version.ref = "junit" }
 javax-inject = { module = "javax.inject:javax.inject", version.ref = "javax-inject" }
 

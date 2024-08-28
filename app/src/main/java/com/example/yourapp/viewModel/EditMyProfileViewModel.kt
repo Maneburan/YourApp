@@ -4,13 +4,19 @@ import androidx.lifecycle.viewModelScope
 import com.example.domain.Exceptions
 import com.example.domain.core.Entity
 import com.example.domain.core.UseCase
-import com.example.yourapp.util.MviViewModel
+import com.example.yourapp.R
 import com.example.yourapp.core.EditMyProfile.Intents
 import com.example.yourapp.core.EditMyProfile.Model
 import com.example.yourapp.core.EditMyProfile.Navigation
+import com.example.yourapp.ui.composable.textField.DATA_FORMAT
+import com.example.yourapp.util.Model.Error
+import com.example.yourapp.util.MviViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
@@ -19,6 +25,11 @@ class EditMyProfileViewModel @Inject constructor(
     private val getProfileUseCase: UseCase.GetProfile
 ) :
     MviViewModel<Model, Intents, Navigation>() {
+
+    private val lastException = CoroutineExceptionHandler { _, e ->
+        state(state().copy(wait = false, error = Error("${e.message}", null),
+            pages = Model.Pages.TryAgain))
+    }
 
     init {
         intents.iGetRemoteProfile()
@@ -49,6 +60,9 @@ class EditMyProfileViewModel @Inject constructor(
             val filename = if (base64 == null) null else "filename"
             state(state().copy(base64 = base64, filename = filename))
         }
+        override val iChangeBirthDay: (String) -> Unit = { birthday ->
+            state(state().copy(birthday = birthday))
+        }
 
         override val iGetRemoteProfile: () -> Unit = {
             getRemoteProfile()
@@ -63,7 +77,7 @@ class EditMyProfileViewModel @Inject constructor(
     }
 
     private fun getRemoteProfile() {
-        viewModelScope.launch {
+        viewModelScope.launch(lastException) {
             state(state().copy(wait = true, error = null))
 
             try {
@@ -80,7 +94,7 @@ class EditMyProfileViewModel @Inject constructor(
                         name = profile.name ?: "",
                         username = profile.username,
                         avatar = avatar,
-//                        birthday = profile.birthday,
+                        birthday = profile.birthday ?: "",
                         city = profile.city ?: "",
                         vk = profile.vk ?: "",
                         instagram = profile.instagram ?: "",
@@ -91,29 +105,34 @@ class EditMyProfileViewModel @Inject constructor(
             } catch (error: Exceptions.Incorrect) {
                 state(
                     state().copy(wait = false, pages = Model.Pages.TryAgain,
-                        error = "Ошибка: не корректные данные"))
+                        error = Error(null, R.string.incorrect_data)))
             } catch (error: Exceptions.HttpException) {
                 state(
                     state().copy(wait = false, pages = Model.Pages.TryAgain,
-                        error = "Ошибка: ${error.message}"))
+                        error = Error(error.message, null)))
             }
         }
     }
 
     private fun editRemoteProfile() {
-        viewModelScope.launch {
+        viewModelScope.launch(lastException) {
             state(state().copy(wait = true, error = null))
 
             try {
+                val birthDay = try {
+                    SimpleDateFormat(DATA_FORMAT, Locale.ENGLISH)
+                        .parse(state().birthday)?.time
+                } catch (e: Exception) { null }
+
                 editProfileUseCase.editMe(
                     Entity.EditProfile(
-                        name = state().name.ifEmpty { null },
+                        name = state().name,
                         username = state().username,
-                        birthday = null,//getState().birthday,
-                        city = state().city.ifEmpty { null },
-                        vk = state().vk.ifEmpty { null },
-                        instagram = state().instagram.ifEmpty { null },
-                        status = state().status.ifEmpty { null },
+                        birthday = birthDay,
+                        city = state().city,
+                        vk = state().vk,
+                        instagram = state().instagram,
+                        status = state().status,
                         filename = state().filename,
                         base64 = state().base64,
                     )
@@ -125,11 +144,11 @@ class EditMyProfileViewModel @Inject constructor(
             } catch (error: Exceptions.Incorrect) {
                 state(
                     state().copy(wait = false, pages = Model.Pages.Edit,
-                        error = "Ошибка: Ошибка: не корректные данные"))
+                        error = Error(null, R.string.incorrect_data)))
             } catch (error: Exceptions.HttpException) {
                 state(
                     state().copy(wait = false, pages = Model.Pages.Edit,
-                        error = "Ошибка: ${error.message}"))
+                        error = Error(error.message, null)))
             }
         }
     }

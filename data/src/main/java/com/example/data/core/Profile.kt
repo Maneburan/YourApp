@@ -32,7 +32,7 @@ internal object Profile {
                 data class Profile(
                     val name: String?,
                     val username: String,
-                    val birthday: String?,
+                    val birthday: Long?,
                     val city: String?,
                     val vk: String?,
                     val instagram: String?,

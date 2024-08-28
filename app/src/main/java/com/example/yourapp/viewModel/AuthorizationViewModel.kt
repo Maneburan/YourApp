@@ -3,10 +3,12 @@ package com.example.yourapp.viewModel
 import androidx.lifecycle.viewModelScope
 import com.example.domain.Exceptions
 import com.example.domain.core.UseCase
-import com.example.yourapp.util.MviViewModel
+import com.example.yourapp.R
 import com.example.yourapp.core.Authorization.Intents
 import com.example.yourapp.core.Authorization.Model
 import com.example.yourapp.core.Authorization.Navigation
+import com.example.yourapp.util.Model.Error
+import com.example.yourapp.util.MviViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
@@ -19,9 +21,9 @@ class AuthorizationViewModel @Inject constructor(
     MviViewModel<Model, Intents, Navigation>() {
 
     private val lastException = CoroutineExceptionHandler { _, e ->
-//            setState(getState().copy(wait = false, error = "Ошибка: ${e.message}",
-//                pages = Model.Pages.SendAuthCode, code = ""))
-        throw e
+        state(state().copy(wait = false, error = Error("${e.message}", null),
+            pages = Model.Pages.SendAuthCode, code = ""))
+//        throw e
     }
 
     override fun initModel() = Model()
@@ -29,6 +31,9 @@ class AuthorizationViewModel @Inject constructor(
     override fun initIntents() = object : Intents {
         override val iChangePhone: (String) -> Unit = { phone ->
             state(state().copy(phone = phone))
+        }
+        override val iChangeCountryCode: (countryCode: String) -> Unit = { countryCode ->
+            state(state().copy(countryCode = countryCode))
         }
         override val iSendAuthCode: () -> Unit = {
             sendAuthCode()
@@ -49,19 +54,19 @@ class AuthorizationViewModel @Inject constructor(
             state(state().copy(wait = true, error = null))
 
             try {
-                val profile = phoneAuthUseCase.authorize(phone = state().phone,
+                val profile = phoneAuthUseCase.authorize(phone = state().countryCode + state().phone,
                     code = state().code)
                 if (profile != null) {
                     navigate(Navigation.ToMyProfile)
                 } else {
                     state(state().copy(wait = false, error = null,
                         pages = Model.Pages.SendAuthCode))
-                    navigate(Navigation.ToRegistration(phone = state().phone))
+                    navigate(Navigation.ToRegistration(phone = state().countryCode + state().phone))
                 }
             } catch (error: Exceptions.Incorrect) {
-                state(state().copy(wait = false, error = "Ошибка: не корректные данные"))
+                state(state().copy(wait = false, error = Error(null, R.string.incorrect_data)))
             } catch (error: Exceptions.HttpException) {
-                state(state().copy(wait = false, error = "Ошибка: ${error.message}"))
+                state(state().copy(wait = false, error = Error(error.message, null)))
             }
         }
     }
@@ -71,7 +76,8 @@ class AuthorizationViewModel @Inject constructor(
             state(state().copy(wait = true, error = null))
 
             try {
-                val isSuccess = phoneAuthUseCase.sendAuthCode(phone = state().phone)
+                val isSuccess = phoneAuthUseCase.sendAuthCode(
+                    phone = state().countryCode + state().phone)
 
                 if (isSuccess) {
                     state(
@@ -80,14 +86,13 @@ class AuthorizationViewModel @Inject constructor(
                         ))
                 } else {
                     state(
-                        state().copy(wait = false,
-                            error = "Ошибка: Код не отправлен (повторите попытку)")
+                        state().copy(wait = false, error = Error(null, R.string.code_not_sent))
                     )
                 }
             } catch (error: Exceptions.Incorrect) {
-                state(state().copy(wait = false, error = "Ошибка: Ошибка: не корректные данные"))
+                state(state().copy(wait = false, error = Error(null, R.string.incorrect_data)))
             } catch (error: Exceptions.HttpException) {
-                state(state().copy(wait = false, error = "Ошибка: ${error.message}"))
+                state(state().copy(wait = false, error = Error(error.message, null)))
             }
         }
     }

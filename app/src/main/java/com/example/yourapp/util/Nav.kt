@@ -4,6 +4,9 @@ object Nav {
 
     object Args {
         const val PHONE = "PHONE"
+
+        const val SECOND = "SECOND"
+        const val THIRD = "THIRD"
     }
 
     object HostRoute {
@@ -12,6 +15,9 @@ object Nav {
 
         const val AUTHORIZATION = "AUTHORIZATION"
         const val REGISTRATION = "REGISTRATION"
+
+        const val CHATS = "CHATS"
+        const val CHAT = "CHAT"
     }
 
 }

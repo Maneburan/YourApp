@@ -1,13 +1,16 @@
 package com.example.yourapp.core
 
+import com.example.yourapp.util.Model.Error
+
 object Authorization {
 
     data class Model(
         val wait: Boolean = false,
-        val error: String? = null,
+        val error: Error? = null,
         val pages: Pages = Pages.SendAuthCode,
 
         val phone: String = "",
+        val countryCode: String = "",
         val code: String = "",
     ) {
         sealed interface Pages {
@@ -23,6 +26,7 @@ object Authorization {
 
     interface Intents {
         val iChangePhone: (String) -> Unit
+        val iChangeCountryCode: (String) -> Unit
         val iChangeCode: (String) -> Unit
 
         val iToSendAuthCode: () -> Unit

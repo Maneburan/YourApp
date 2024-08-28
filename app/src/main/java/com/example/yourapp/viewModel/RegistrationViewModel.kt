@@ -4,12 +4,15 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.example.domain.Exceptions
 import com.example.domain.core.UseCase
-import com.example.yourapp.util.MviViewModel
-import com.example.yourapp.util.Nav
+import com.example.yourapp.R
 import com.example.yourapp.core.Registration.Intents
 import com.example.yourapp.core.Registration.Model
 import com.example.yourapp.core.Registration.Navigation
+import com.example.yourapp.util.Model.Error
+import com.example.yourapp.util.MviViewModel
+import com.example.yourapp.util.Nav
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -19,6 +22,10 @@ class RegistrationViewModel @Inject constructor(
     private val phoneRegistrationUseCase: UseCase.PhoneRegistration
 ) :
     MviViewModel<Model, Intents, Navigation>() {
+
+    private val lastException = CoroutineExceptionHandler { _, e ->
+        state(state().copy(wait = false, error = Error("${e.message}", null)))
+    }
 
     init {
         state(state().copy(phone = savedState[Nav.Args.PHONE]!!))
@@ -50,7 +57,7 @@ class RegistrationViewModel @Inject constructor(
     }
 
     private fun register() {
-        viewModelScope.launch {
+        viewModelScope.launch(lastException) {
             state(state().copy(wait = true, error = null))
 
             try {
@@ -58,9 +65,9 @@ class RegistrationViewModel @Inject constructor(
                     name = state().name, username = state().userName)
                 navigate(Navigation.ToMyProfile)
             } catch (error: Exceptions.Incorrect) {
-                state(state().copy(wait = false, error = "Ошибка: Ошибка: не корректные данные"))
+                state(state().copy(wait = false, error = Error(null, R.string.incorrect_data)))
             } catch (error: Exceptions.HttpException) {
-                state(state().copy(wait = false, error = "Ошибка: ${error.message}"))
+                state(state().copy(wait = false, error = Error(error.message, null)))
             }
         }
     }

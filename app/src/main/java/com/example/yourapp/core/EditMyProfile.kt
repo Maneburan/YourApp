@@ -1,18 +1,19 @@
 package com.example.yourapp.core
 
+import com.example.yourapp.util.Model.Error
 import java.util.Date
 
 object EditMyProfile {
 
     data class Model(
-        val error: String? = null,
+        val error: Error? = null,
         val wait: Boolean = false,
         val pages: Pages = Pages.Edit,
 
         val avatar: String = "",
         val name: String = "",
         val username: String = "",
-//        val birthday: Date = Date(),
+        val birthday: String = "",
         val city: String = "",
         val vk: String = "",
         val instagram: String = "",
@@ -41,6 +42,7 @@ object EditMyProfile {
         val iChangeInstagram: (String) -> Unit
         val iChangeStatus: (String) -> Unit
         val iChangeBase64: (String?) -> Unit
+        val iChangeBirthDay: (String) -> Unit
 
         val iGetRemoteProfile: () -> Unit
         val iEditRemoteProfile: () -> Unit

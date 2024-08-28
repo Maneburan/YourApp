@@ -1,24 +1,34 @@
 package com.example.yourapp.ui.screen
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Face
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.example.yourapp.R
 import com.example.yourapp.core.MyProfile
+import com.example.yourapp.ui.composable.container.RowText
+import com.example.yourapp.ui.composable.container.RowTwoButtons
 import com.example.yourapp.viewModel.MyProfileViewModel
 import kotlinx.coroutines.flow.first
 
@@ -40,7 +50,15 @@ fun MyProfileScreen(
     onTopBar {
         TopAppBar(
             title = {
-                Text(text = "Мой профиль")
+                Text(text = stringResource(id = R.string.my_profile))
+            },
+            actions = {
+                IconButton(
+                    onClick = intents.iChats,
+                    content = {
+                        Icon(Icons.Filled.Face, stringResource(id = R.string.clear))
+                    }
+                )
             },
         )
     }
@@ -50,67 +68,56 @@ fun MyProfileScreen(
     ) {
         Column(
             Modifier
-                .fillMaxWidth()
                 .verticalScroll(rememberScrollState())
-                .weight(1f),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+                .weight(1f)
+                .padding(16.dp, 8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             AsyncImage(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .background(Color.LightGray)
+                    .fillMaxWidth()
+                    .height(250.dp),
+                contentScale = ContentScale.FillHeight,
                 model = state.avatar,
                 contentDescription = null,
             )
 
             RowText(
-                txt1 = "Телефон",
+                txt1 = stringResource(id = R.string.phone),
                 txt2 = state.phone,
             )
             RowText(
-                txt1 = "Ник",
+                txt1 = stringResource(id = R.string.nick),
                 txt2 = state.name,
             )
             RowText(
-                txt1 = "Город",
+                txt1 = stringResource(id = R.string.city),
                 txt2 = state.city,
             )
             RowText(
-                txt1 = "Статус",
+                txt1 = stringResource(id = R.string.date_of_birth),
+                txt2 = state.birthday,
+            )
+
+            RowText(
+                txt1 = stringResource(id = R.string.zodiac_sign),
+                txt2 = stringResource(id = state.zodiac),
+            )
+            RowText(
+                txt1 = stringResource(id = R.string.status),
                 txt2 = state.status,
             )
         }
 
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            OutlinedButton(onClick = intents.iLogOut) {
-                Text("Log out")
-            }
-
-            Button(onClick = intents.iEditProfile) {
-                Text("Edit")
-            }
-        }
-
-    }
-}
-
-@Composable
-private fun RowText(
-    txt1: String,
-    txt2: String,
-) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Text(
-            text = "$txt1: ",
-            fontWeight = FontWeight(750)
+        RowTwoButtons(
+            txt1 = stringResource(id = R.string.log_out),
+            onClick1 = intents.iLogOut,
+            enabled1 = true,
+            txt2 = stringResource(id = R.string.edit),
+            onClick2 = intents.iEditProfile,
+            enabled2 = true
         )
-        Text(
-            modifier = Modifier.fillMaxSize(),
-            text = txt2
-        )
+
     }
 }

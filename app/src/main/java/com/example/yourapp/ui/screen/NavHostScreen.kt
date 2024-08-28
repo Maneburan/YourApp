@@ -38,6 +38,8 @@ fun NavHostScreen(
                             navController.navigate(Nav.HostRoute.AUTHORIZATION)
                         MyProfile.Navigation.ToEditMyProfile ->
                             navController.navigate(Nav.HostRoute.EDIT_MY_PROFILE)
+                        MyProfile.Navigation.ToChats ->
+                            navController.navigate(Nav.HostRoute.CHATS)
                     }
                 },
                 onTopBar = onTopBar
@@ -78,11 +80,6 @@ fun NavHostScreen(
         ) {
             BackHandler {
                 onBack()
-//                navController.navigate(Nav.HostRoute.MY_PROFILE) {
-//                    popUpTo(Nav.HostRoute.MY_PROFILE) {
-//                        inclusive = true
-//                    }
-//                }
             }
             AuthorizationScreen(
                 viewModel = hiltViewModel(),
@@ -122,6 +119,36 @@ fun NavHostScreen(
                     }
                 },
                 onTopBar = onTopBar
+            )
+        }
+
+        composable(
+            route = Nav.HostRoute.CHATS
+        ) {
+            ChatsScreen(
+                onTopBar = onTopBar,
+                toBack = {
+                    navController.popBackStack()
+                },
+                toChat = { s, t ->
+                    navController.navigate("${Nav.HostRoute.CHAT}/$s/$t")
+                }
+            )
+        }
+
+        composable(
+            route = "${Nav.HostRoute.CHAT}/{${Nav.Args.SECOND}}/{${Nav.Args.THIRD}}"
+        ) { bse ->
+            val second = checkNotNull(bse.arguments?.getString(Nav.Args.SECOND))
+            val third = checkNotNull(bse.arguments?.getString(Nav.Args.THIRD))
+
+            ChatScreen(
+                second = second,
+                third = third,
+                onTopBar = onTopBar,
+                toBack = {
+                    navController.popBackStack()
+                }
             )
         }
 

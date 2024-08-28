@@ -1,11 +1,10 @@
-package com.example.yourapp.ui.view
+package com.example.yourapp.ui.composable.container
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -25,7 +24,8 @@ fun KeyboardColumn(
     val interactionSource = remember { MutableInteractionSource() }
 
     Column(
-        modifier = modifier.imePadding().clickable(
+        modifier = modifier
+            .clickable(
                 interactionSource = interactionSource,
                 indication = null,    // this gets rid of the ripple effect
             ) {

@@ -1,4 +1,4 @@
-package com.example.yourapp.ui.view
+package com.example.yourapp.ui.composable
 
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
@@ -21,19 +21,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.imageLoader
 import coil.request.ImageRequest
-import kotlinx.coroutines.launch
+import com.example.yourapp.R
 
 @Composable
 fun ImagePicker(
+    contentScale: ContentScale = ContentScale.Fit,
+    modifier: Modifier,
     remoteUri: Uri?,
     onImgLoaded: (btm: Bitmap?) -> Unit
 ) {
@@ -57,7 +59,7 @@ fun ImagePicker(
                     launcher.launch("image/*")
                 },
                 content = {
-                    Text("Изображение")
+                    Text(stringResource(id = R.string.image))
                 }
             )
             Spacer(modifier = Modifier.width(8.dp))
@@ -91,8 +93,8 @@ fun ImagePicker(
             AsyncImage(
                 model = model,
                 contentDescription = null,
-                modifier = Modifier.fillMaxWidth(),
-                contentScale = ContentScale.FillWidth,
+                modifier = modifier,
+                contentScale = contentScale,
             )
         }
 

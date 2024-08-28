@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -21,7 +22,6 @@ import com.example.yourapp.ui.screen.NavHostScreen
 import com.example.yourapp.ui.theme.YourAppTheme
 import com.example.yourapp.util.Nav
 import dagger.hilt.android.AndroidEntryPoint
-
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -40,15 +40,14 @@ class MainActivity : ComponentActivity() {
 
             YourAppTheme {
                 Scaffold(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier.fillMaxSize().imePadding(),
                     topBar = topBar.value
                 ) { innerPadding ->
 
                     NavHostScreen(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(innerPadding)
-                            .padding(top = 16.dp, bottom = 16.dp, start = 16.dp, end = 16.dp),
+                            .padding(innerPadding),
                         navController = navController,
                         startDestination = Nav.HostRoute.MY_PROFILE,
                         onTopBar = { topBar.value = it },
@@ -60,21 +59,5 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    YourAppTheme {
-        Greeting("Android")
     }
 }

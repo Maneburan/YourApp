@@ -1,10 +1,12 @@
 package com.example.yourapp.core
 
+import com.example.yourapp.util.Model.Error
+
 object Registration {
 
     data class Model(
         val wait: Boolean = false,
-        val error: String? = null,
+        val error: Error? = null,
 
         val phone: String = "",
         val name: String = "",
