@@ -31,11 +31,17 @@ fun PhoneTextField(
     onValueChange: (countryCode: String, number: String, isValid: Boolean) -> Unit,
 ) {
     val context = LocalContext.current
+    val inspectionMode = LocalInspectionMode.current
     var country by remember { mutableStateOf(Country.Bangladesh) }
-    if (!LocalInspectionMode.current) {
-        CCPUtils.getCountryAutomatically(context = LocalContext.current).let {
-            it?.let {
-                country = it
+
+    val autoPick = remember { mutableStateOf(true) }
+
+    if (autoPick.value) {
+        if (!inspectionMode) {
+            CCPUtils.getCountryAutomatically(context = context).let {
+                it?.let {
+                    country = it
+                }
             }
         }
     }
@@ -91,6 +97,7 @@ fun PhoneTextField(
                     isNumberValid = validatePhoneNumber(
                         number = number, countryCode = it.countryCode
                     )
+                    autoPick.value = false
                     onValueChange(country.countryCode, number, isNumberValid)
                 },
                 clickable = enabled
